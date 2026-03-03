@@ -1,0 +1,328 @@
+using CinemaTicketSystem;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices.Marshalling;
+
+namespace CinemaTicketTEST
+{
+    public class TicketSystemTest
+    {
+
+        private readonly ITicketPriceCalculator _calculator;
+
+        #region Проверка корректных вычислений
+
+        public TicketSystemTest()
+        {
+            _calculator = new TicketPriceCalculator();
+        }
+
+
+        [Fact]
+        public void TestTicket_FromNotDiscount()
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(300, result);
+        }
+
+        [Fact]
+        public void TestTicket_ChildDiscount()
+        {
+            var request = new TicketRequest
+            {
+                Age = 5,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public void TestTicket_ChildDiscount_For6To17()
+        {
+            var request = new TicketRequest
+            {
+                Age = 15,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(180, result);
+        }
+
+        [Fact]
+        public void TestTicket_StudentDiscount_For18To25()
+        {
+            var request = new TicketRequest
+            {
+                Age = 19,
+                IsStudent = true,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(240, result);
+        }
+
+        [Fact]
+        public void TestTicket_PensionerDiscount_For65Plus()
+        {
+            var request = new TicketRequest
+            {
+                Age = 70,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(150, result);
+        }
+
+        [Fact]
+        public void TestTicket_WednesdayDiscount()
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Wednesday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(210, result);
+        }
+
+        [Fact]
+        public void TestTicket_ForMorningSessionBefore12()
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(10, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(255, result);
+        }
+
+        [Fact]
+        public void TestTicket_WhenIsVipTrue()
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = true,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(13, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(600, result);
+        }
+
+        [Fact]
+        public void TestTicket_SeveralDiscountsHaveBeenUsed()
+        {
+            var request = new TicketRequest
+            {
+                Age = 65,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Wednesday,
+                SessionTime = new TimeSpan(10, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(150, result);
+        }
+
+        [Fact]
+        public void TestTicket_PriceAfterDiscountPensionerPlusVipTrue()
+        {
+            var request = new TicketRequest
+            {
+                Age = 70,
+                IsStudent = false,
+                IsVip = true,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(300, result);
+        }
+
+        #endregion
+
+        #region Проверка граничных значений
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(120)]
+        public void TestTicket_HandleExtremeAges(int age)
+        {
+            var request = new TicketRequest
+            {
+                Age = age,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var exception = Record.Exception(() => _calculator.CalculatePrice(request));
+
+            Assert.Null(exception);
+        }
+
+        [Theory]
+        [InlineData(5, 0)]
+        [InlineData(6, 180)]
+        [InlineData(17, 180)]
+        [InlineData(18, 240)]
+        [InlineData(25, 240)]
+        [InlineData(26, 300)]
+        [InlineData(64, 300)]
+        [InlineData(65, 150)]
+        [InlineData(120, 150)]
+
+        public void TestTicket_HandleAgeBoundaries(int age, int expectedPrice)
+        {
+            var request = new TicketRequest
+            {
+                Age = age,
+                IsStudent = age >= 18 && age <= 25,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(expectedPrice, result);
+        }
+
+        [Theory]
+        [InlineData(11, 59, 255)]
+        [InlineData(12, 0, 300)]
+        public void TestTicket_HandleMorningDiscountTimeBoundaries(int hour, int minute, int expectedPrice)
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(hour, minute, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(expectedPrice, result);
+        }
+        #endregion
+
+        #region Проверка исключений
+
+        [Fact]
+        public void TestTicket_ShouldThrowArgumentNullException_WhenRequestIsNull()
+        {
+            TicketRequest request = null;
+
+            Assert.Throws<ArgumentNullException>(() => _calculator.CalculatePrice(request));
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(121)]
+
+        public void TestTicket_ShouldThrowArgumentOutOfRangeException_WhenAgeIsInvalid(int invalidAge)
+        {
+            var request = new TicketRequest
+            {
+                Age = invalidAge,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Monday,
+                SessionTime = new TimeSpan(18, 0, 0)
+            };
+
+            Assert.Throws<ArgumentOutOfRangeException>(()  => _calculator.CalculatePrice(request));
+        }
+        #endregion
+
+        #region комбинированные сценарии
+
+        [Fact]
+        public void TestTicket_ShouldHandleComplexScenario_WithMultipleDiscountsAndVip()
+        {
+            var request = new TicketRequest
+            {
+                Age = 17,
+                IsStudent = false,
+                IsVip = true,
+                Day = DayOfWeek.Wednesday,
+                SessionTime = new TimeSpan(10, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(360, result);
+        }
+
+        [Fact]
+        public void TestTicket_ShoudlRountToNearestInteger()
+        {
+            var request = new TicketRequest
+            {
+                Age = 30,
+                IsStudent = false,
+                IsVip = false,
+                Day = DayOfWeek.Wednesday,
+                SessionTime = new TimeSpan(10, 0, 0)
+            };
+
+            var result = _calculator.CalculatePrice(request);
+
+            Assert.Equal(210, result);
+            Assert.Equal(0, result % 1);
+        }
+
+        #endregion
+    }
+}

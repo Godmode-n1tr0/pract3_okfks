@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\st310-07\\Documents\\Shengals\\pract3_okfks\\CinemaTicketTEST\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F94AA7C9-45C4-4E4D-9E41-380C85B4BD53}|CinemaTicketTEST.csproj|c:\\users\\st310-07\\documents\\shengals\\pract3_okfks\\cinematickettest\\ticketsystemtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F94AA7C9-45C4-4E4D-9E41-380C85B4BD53}|CinemaTicketTEST.csproj|solutionrelative:ticketsystemtest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TicketSystemTest.cs",
+              "DocumentMoniker": "C:\\Users\\st310-07\\Documents\\Shengals\\pract3_okfks\\CinemaTicketTEST\\TicketSystemTest.cs",
+              "RelativeDocumentMoniker": "TicketSystemTest.cs",
+              "ToolTip": "C:\\Users\\st310-07\\Documents\\Shengals\\pract3_okfks\\CinemaTicketTEST\\TicketSystemTest.cs",
+              "RelativeToolTip": "TicketSystemTest.cs",
+              "ViewState": "AgIAANAAAAAAAAAAAAAkwN8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-03T03:36:21.239Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
