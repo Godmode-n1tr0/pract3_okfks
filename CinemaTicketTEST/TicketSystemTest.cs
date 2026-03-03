@@ -20,6 +20,7 @@ namespace CinemaTicketTEST
         [Fact]
         public void TestTicket_FromNotDiscount()
         {
+            int ishod = 300;
             var request = new TicketRequest
             {
                 Age = 30,
@@ -31,12 +32,13 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(300, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_ChildDiscount()
         {
+            int ishod = 0;
             var request = new TicketRequest
             {
                 Age = 5,
@@ -48,12 +50,13 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(0, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_ChildDiscount_For6To17()
         {
+            int ishod = 180;
             var request = new TicketRequest
             {
                 Age = 15,
@@ -65,12 +68,14 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(180, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_StudentDiscount_For18To25()
         {
+            int ishod = 240;
+
             var request = new TicketRequest
             {
                 Age = 19,
@@ -82,12 +87,13 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(240, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_PensionerDiscount_For65Plus()
         {
+            int ishod = 150;
             var request = new TicketRequest
             {
                 Age = 70,
@@ -99,12 +105,13 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(150, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_WednesdayDiscount()
         {
+            int ishod = 210;
             var request = new TicketRequest
             {
                 Age = 30,
@@ -116,12 +123,14 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(210, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_ForMorningSessionBefore12()
         {
+            int ishod = 255;
+
             var request = new TicketRequest
             {
                 Age = 30,
@@ -133,12 +142,14 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(255, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_WhenIsVipTrue()
         {
+            int ishod = 600;
+
             var request = new TicketRequest
             {
                 Age = 30,
@@ -150,12 +161,14 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(600, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_SeveralDiscountsHaveBeenUsed()
         {
+            int ishod = 150;
+
             var request = new TicketRequest
             {
                 Age = 65,
@@ -167,12 +180,14 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(150, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_PriceAfterDiscountPensionerPlusVipTrue()
         {
+            int ishod = 300;
+
             var request = new TicketRequest
             {
                 Age = 70,
@@ -184,7 +199,7 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(300, result);
+            Assert.Equal(ishod, result);
         }
 
         #endregion
@@ -291,6 +306,8 @@ namespace CinemaTicketTEST
         [Fact]
         public void TestTicket_ShouldHandleComplexScenario_WithMultipleDiscountsAndVip()
         {
+            int ishod = 360;
+
             var request = new TicketRequest
             {
                 Age = 17,
@@ -302,12 +319,15 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(360, result);
+            Assert.Equal(ishod, result);
         }
 
         [Fact]
         public void TestTicket_ShoudlRountToNearestInteger()
         {
+            int ishod = 210;
+            int ishod2 = 0;
+
             var request = new TicketRequest
             {
                 Age = 30,
@@ -319,8 +339,8 @@ namespace CinemaTicketTEST
 
             var result = _calculator.CalculatePrice(request);
 
-            Assert.Equal(210, result);
-            Assert.Equal(0, result % 1);
+            Assert.Equal(ishod, result);
+            Assert.Equal(ishod2, result % 1);
         }
 
         #endregion
